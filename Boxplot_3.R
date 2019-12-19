@@ -42,22 +42,25 @@ for (i in seq_along(colname)){
   out[[i]] <- p
 }
 
+
+##GROUP 1 PLOTING...
 grid.arrange(out[[1]], out[[2]], out[[3]], 
              out[[4]], out[[5]], out[[6]], 
              out[[7]], out[[8]], out[[9]], 
              ncol = 3, nrow = 3,
              top = textGrob(grid_graph_title, gp=gpar(fontsize=20,font=1)))
 
-
+##GROUP 2 PLOTING...
 #grid.arrange(out[[10]], out[[11]], out[[12]], 
 #             out[[13]], out[[14]], out[[15]], 
 #             out[[16]], out[[17]], out[[18]], 
 #             ncol = 3, nrow = 3,
 #             top = textGrob(grid_graph_title, gp=gpar(fontsize=20,font=1)))
 
-grid.arrange(out[[19]], out[[20]], 
-             ncol = 2, nrow = 1,
-             top = textGrob(grid_graph_title, gp=gpar(fontsize=20,font=1)))
+##GROUP 3 PLOTING...
+#grid.arrange(out[[19]], out[[20]], 
+#             ncol = 2, nrow = 1,
+#             top = textGrob(grid_graph_title, gp=gpar(fontsize=20,font=1)))
 
 
 #dev.off()

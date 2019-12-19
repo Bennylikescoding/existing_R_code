@@ -8,28 +8,31 @@ library(grid)
 library(gridExtra)
 
 # 2.import files
-#孙老师原始肠免疫细胞114-total.csv
+
 file_path<-choose.files()
 bxplot_df<-read.csv(file_path)
 
 # 3.set variables
 n_col_value = 5
 
-Tg_subset_df <- bxplot_df[which(bxplot_df$genetype == 'Tg'),]
-WT_subset_df <- bxplot_df[which(bxplot_df$genetype == 'WT'),]
-cocageWT_subset_df <- bxplot_df[which(bxplot_df$genetype == 'cocageWT'),]
+Tg_subset <- bxplot_df[which(bxplot_df$genetype == 'Tg'),]
+WT_subset <- bxplot_df[which(bxplot_df$genetype == 'WT'),]
+cocageWT_subset <- bxplot_df[which(bxplot_df$genetype == 'cocageWT'),]
 
-grid_graph_title = "Tg_subset,1-9"
+plot_df <- cocageWT_subset
+grid_graph_title = "cocageWT_subset,1-9"
 
 # 4.start ploting
 colname <- colnames(bxplot_df[c(n_col_value:ncol(bxplot_df))])
 
 out <- NULL
+
+print(paste("now ploting ", plot_df$genetype))
+
 for (i in seq_along(colname)){
   
   #https://dodata.wordpress.com/2012/10/25/ggplot2-in-loops-and-multiple-plots/
-  #print(paste("current immune cells is ", colname[i]))
-  p<-ggplot(Tg_subset_df,aes_string(x="months_when_sampling", y=colname[i], 
+  p<-ggplot(plot_df,aes_string(x="months_when_sampling", y=colname[i], 
                                           group="months_when_sampling"))+
   geom_boxplot()+
   geom_dotplot(binaxis='y', stackdir='center',dotsize=0.5,color="black")+
@@ -44,6 +47,19 @@ grid.arrange(out[[1]], out[[2]], out[[3]],
              out[[7]], out[[8]], out[[9]], 
              ncol = 3, nrow = 3,
              top = textGrob(grid_graph_title, gp=gpar(fontsize=20,font=1)))
+
+
+#grid.arrange(out[[10]], out[[11]], out[[12]], 
+#             out[[13]], out[[14]], out[[15]], 
+#             out[[16]], out[[17]], out[[18]], 
+#             ncol = 3, nrow = 3,
+#             top = textGrob(grid_graph_title, gp=gpar(fontsize=20,font=1)))
+
+grid.arrange(out[[19]], out[[20]], 
+             ncol = 2, nrow = 1,
+             top = textGrob(grid_graph_title, gp=gpar(fontsize=20,font=1)))
+
+
 #dev.off()
 #ggsave(filename=paste("Plot of Profit versus",colnames(movieSummary[i]),".pdf",sep=" "), plot=p)
 

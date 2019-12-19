@@ -8,6 +8,7 @@ library(grid)
 library(gridExtra)
 
 # 2.import files
+#孙老师原始肠免疫细胞114-total.csv
 file_path<-choose.files()
 bxplot_df<-read.csv(file_path)
 
@@ -18,7 +19,7 @@ Tg_subset_df <- bxplot_df[which(bxplot_df$genetype == 'Tg'),]
 WT_subset_df <- bxplot_df[which(bxplot_df$genetype == 'WT'),]
 cocageWT_subset_df <- bxplot_df[which(bxplot_df$genetype == 'cocageWT'),]
 
-grid_graph_title = "cocageWT_subset,1-9"
+grid_graph_title = "Tg_subset,1-9"
 
 # 4.start ploting
 colname <- colnames(bxplot_df[c(n_col_value:ncol(bxplot_df))])
@@ -28,10 +29,10 @@ for (i in seq_along(colname)){
   
   #https://dodata.wordpress.com/2012/10/25/ggplot2-in-loops-and-multiple-plots/
   #print(paste("current immune cells is ", colname[i]))
-  p<-ggplot(cocageWT_subset_df,aes_string(x="months_when_sampling", y=colname[i], 
+  p<-ggplot(Tg_subset_df,aes_string(x="months_when_sampling", y=colname[i], 
                                           group="months_when_sampling"))+
   geom_boxplot()+
-  geom_dotplot(binaxis='y', binwidth = 0.2, stackdir='center',dotsize=0.5,color="black")+
+  geom_dotplot(binaxis='y', stackdir='center',dotsize=0.5,color="black")+
   stat_summary(fun.y=mean, geom="point", shape=20, size=6, color="red", fill="red")+
   stat_summary(fun.y=mean, geom="line", size=1, color="red", aes(group=1))
   
@@ -51,10 +52,10 @@ grid.arrange(out[[1]], out[[2]], out[[3]],
 
 ###--code for single graph-###
 ###---for debug###
-
-#a<-ggplot(cocageWT_subset_df,aes(x=months_when_sampling,y=NK,group=months_when_sampling))+
+#dev.off()
+#a<-ggplot(cocageWT_subset_df,aes(x=months_when_sampling,y=NKT,group=months_when_sampling))+
 #    geom_boxplot()+
-#  geom_dotplot(binaxis='y', binwidth = 0.2, stackdir='center',dotsize=0.5,color="black")+
+#  geom_dotplot(binaxis='y', binwidth = 0.2, stackdir='center',dotsize=0.5)+
 #  stat_summary(fun.y=mean, geom="point", shape=20, size=6, color="red", fill="red")+
 #  stat_summary(fun.y=mean, geom="line", size=1, color="red", aes(group=1))
 

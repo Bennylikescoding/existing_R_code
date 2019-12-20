@@ -10,7 +10,6 @@ library(grid)
 library(gridExtra)
 
 #data type:
-#D:\971晚期菌群文章\肠免疫细胞\correlation\aggregated_for_one_step_correlation-191220.csv
 
 #*don't change*
 #*month*	*group*	NK	NKT
@@ -100,16 +99,42 @@ tp<-grid.arrange(out[[1]], out[[2]], out[[3]],
              ncol = 1, nrow = 3,
              top = textGrob("correlation", gp=gpar(fontsize=15,font=1)))
 
-ggsave("myuplot.pdf",path="C:\\Users\\wangxinyi\\Desktop\\temp\\")
-
+#ggsave(plot = tp, "myuplot.pdf",path="C:\\Users\\wangxinyi\\Desktop\\temp\\")
+#dev.off()
 
 ##BATCH PLOTING...
 for (i in seq(1,19,by=3)){
   output_p<-grid.arrange(out[[i]], out[[i+1]], out[[i+2]], 
                ncol = 1, nrow = 3,
                top = textGrob("correlation", gp=gpar(fontsize=15,font=1)))
-  ggsave(output_p,device="pdf",path="C:\\Users\\wangxinyi\\Desktop\\temp\\")
+  
+  ggsave(filename = paste("group ",i,".pdf"), 
+         plot = output_p, 
+         path="C:\\Users\\wangxinyi\\Desktop\\temp\\")
+  
+  ggsave(filename = paste("group ",i,".png"), 
+         plot = output_p, 
+         path="C:\\Users\\wangxinyi\\Desktop\\temp\\")
+  
+  dev.off()
 }
+
+
+#last 2 plots:
+last_p<-grid.arrange(out[[19]], out[[20]], 
+                 ncol = 1, nrow = 2,
+                 top = textGrob("correlation", gp=gpar(fontsize=15,font=1)))
+
+ggsave(plot = last_p, 
+       filename = paste("group  19.pdf"),path="C:\\Users\\wangxinyi\\Desktop\\temp\\")
+
+ggsave(plot = last_p, 
+       filename = paste("group  19.png"),path="C:\\Users\\wangxinyi\\Desktop\\temp\\")
+
+
+dev.off()
+
+print("print completed!")
 #end of code
 
 #ref:

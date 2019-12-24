@@ -104,7 +104,7 @@ write.csv(pvalue.2,pvalue_file_name)
 
 
 
-# get source and target----
+# GET SOURCE AND TARGET----
 source_target_file_name=paste(file_path,title,"_source_target","_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
 nodeID_file_name=paste(file_path,title,"_nodeID","_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
 
@@ -134,13 +134,32 @@ e<-e$node[!duplicated(e$node)] # delete replicate cells
 e<-data.frame(e)
 e$nodeID<-seq.int(nrow(e))
 write.csv(e,nodeID_file_name,row.names=FALSE)
-# end of get source and target---------
+# END of GET SOURCE AND TARGET---------
 
 
+# DRAW CIRCUS MAP---------
+library(igraph)
+
+#edges == source_target file== c
+#nodes == node ID file == e
+edges <- c
+nodes <- e
+
+g <- graph_from_data_frame(d=edges, vertices=nodes, directed=FALSE)
+
+V(g)$size <- log(strength(g)) * 4+ 3
+#change text size:
+V(g)$label.cex <- 0.4
+
+#plot and save graph:
+pdf(paste0(file_path,"circus_plot_",format(Sys.time(), "%Y%m%d_%H%M%S"),".pdf"))
+plot(g, layout=layout_in_circle, main="Circle")
+dev.off()
 
 ##arrange figures:
 library(grid)
 library(gridExtra)
-grid.arrange(without_sig_corre_plot, with_sig_corre_plot,nrow=2,ncol = 1)
+correlation_plot<-grid.arrange(without_sig_corre_plot, with_sig_corre_plot, nrow=1,ncol = 2)
 
-# additional code:
+ggsave(plot = correlation_plot, paste0("correlation_plot_",format(Sys.time(), "%Y%m%d_%H%M%S"),".pdf"),path=file_path)
+dev.off()

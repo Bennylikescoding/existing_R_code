@@ -51,7 +51,7 @@ write.csv(corr,matrix_file_name)
 #write pvalue out:
 write.csv(p.mat,pvalue_file_name)
 
-#write transformed correlation matrix and pvalue
+# write transformed correlation matrix and pvalue
 ##transformed cor matrix
 trans_corr<-data.frame(row=rownames(corr)[row(corr)[upper.tri(corr)]], 
            col=colnames(corr)[col(corr)[upper.tri(corr)]], 

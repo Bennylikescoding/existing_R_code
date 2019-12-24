@@ -7,19 +7,19 @@
 
 # Input:
 ## matrix 1:
-##group	CD4	CD8	B	Mo	NK
+##*group*	CD4	CD8	B	Mo	NK
 ##WT	12.79166667	21	12.40666667	2.758333333	17.7
 ##Tg	29.1	16.1	14.8	7.2	13.4
 ##Tg_971	20.4	15.1	15.7	7.3	18.8
 
 ## matrix 2:
-##group	g__Alistipes	g__Coriobacteriaceae_UCG_002	g__Paraprevotella	g__unclassified_f__Muribaculaceae	g__Ruminococcaceae_UCG_005
+##*group*	g__Alistipes	g__Coriobacteriaceae_UCG_002	g__Paraprevotella	g__unclassified_f__Muribaculaceae	g__Ruminococcaceae_UCG_005
 ##WT	842.6666667	1	0	0	1
 ##Tg	692.7142857	2	0	0	2
 ##Tg_971	642.8	3	28.8	4.2	3
 
 # Output:
-## 1.Two plots, w/ or w/o significant marks
+## 1.Two plots, w/ or w/o significant marks.
 ## 2.Three tables, correlation coefficient matrix, pvalue matrix, pvalue/correlation combined table
 ## 3.Node ID and edges information
 ## 4.Correlation circus plot
@@ -39,8 +39,11 @@ value_label_size=1
 
 #output file name:
 file_path="C:\\Users\\wangxinyi\\Desktop\\temp\\"
-matrix_file_name=paste(file_path,"correlation matrix_",title,"_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
-pvalue_file_name=paste(file_path,"pvalue_",title,"_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
+matrix_file_name=paste(file_path,title, "_correlation matrix_","_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
+pvalue_file_name=paste(file_path,title, "_pvalue_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
+source_target_file_name=paste(file_path,title, "_source_target_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
+nodeID_file_name=paste(file_path,title, "_nodeID_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
+
 #::::::::::::::::::::::::::::::::::::::::::::::
 
 #choose files interactively:
@@ -105,8 +108,6 @@ write.csv(pvalue.2,pvalue_file_name)
 
 
 # GET SOURCE AND TARGET----
-source_target_file_name=paste(file_path,title,"_source_target","_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
-nodeID_file_name=paste(file_path,title,"_nodeID","_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
 
 ##read original pvalue files:
 a<-pvalue.2
@@ -152,7 +153,7 @@ V(g)$size <- log(strength(g)) * 4+ 3
 V(g)$label.cex <- 0.4
 
 #plot and save graph:
-pdf(paste0(file_path,"circus_plot_",format(Sys.time(), "%Y%m%d_%H%M%S"),".pdf"))
+pdf(paste0(file_path,title, "_circus_plot_",format(Sys.time(), "%Y%m%d_%H%M%S"),".pdf"))
 plot(g, layout=layout_in_circle, main="Circle")
 dev.off()
 
@@ -161,5 +162,5 @@ library(grid)
 library(gridExtra)
 correlation_plot<-grid.arrange(without_sig_corre_plot, with_sig_corre_plot, nrow=1,ncol = 2)
 
-ggsave(plot = correlation_plot, paste0("correlation_plot_",format(Sys.time(), "%Y%m%d_%H%M%S"),".pdf"),path=file_path)
+ggsave(plot = correlation_plot, paste0(title, "_correlation_plot_", format(Sys.time(), "%Y%m%d_%H%M%S"),".pdf"), path=file_path)
 dev.off()

@@ -4,31 +4,52 @@
 #note that you need to open the t-ed file and delete manually the "X" before X2m
 #x<-t(x)
 #default: pearson coefficient
-#include library:
+
+# Input:
+## matrix 1:
+##group	CD4	CD8	B	Mo	NK
+##WT	12.79166667	21	12.40666667	2.758333333	17.7
+##Tg	29.1	16.1	14.8	7.2	13.4
+##Tg_971	20.4	15.1	15.7	7.3	18.8
+
+## matrix 2:
+##group	g__Alistipes	g__Coriobacteriaceae_UCG_002	g__Paraprevotella	g__unclassified_f__Muribaculaceae	g__Ruminococcaceae_UCG_005
+##WT	842.6666667	1	0	0	1
+##Tg	692.7142857	2	0	0	2
+##Tg_971	642.8	3	28.8	4.2	3
+
+# Output:
+## 1.Two plots, w/ or w/o significant marks
+## 2.Three tables, correlation coefficient matrix, pvalue matrix, pvalue/correlation combined table
+## 3.Node ID and edges information
+## 4.Correlation circus plot
+
+# Code start:
+##Load library:
 library(ggcorrplot)
 
 #:::::::::::::::::::::::::::::::::::::::::::::
-#set x and y directory:
+#set title, label size, x and y directory:
 title="S4C"
 by="group"
 #set font size:
 x_label_size=6
 y_label_size=6
 value_label_size=1
-#::::::::::::::::::::::::::::::::::::::::::::::
 
 #output file name:
 file_path="C:\\Users\\wangxinyi\\Desktop\\temp\\"
-matrix_file_name=paste(file_path,"correlation matrix_",title,".csv",sep="")
-pvalue_file_name=paste(file_path,"pvalue_",title,".csv",sep="")
+matrix_file_name=paste(file_path,"correlation matrix_",title,"_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
+pvalue_file_name=paste(file_path,"pvalue_",title,"_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
+#::::::::::::::::::::::::::::::::::::::::::::::
 
 #choose files interactively:
 x_directory<-choose.files(caption = "Select immune cells (x)")
 
-#x_directory="C:\\Users\\wangxinyi\\Desktop\\Ïà¹ØÐÔÍ¼¸´ÏÖ\\ÏÂÍ¼¸´ÏÖ\\031¡ª¡ªcorrelat.csv"
+#x_directory="C:\\Users\\wangxinyi\\Desktop\\ç›¸å…³æ€§å›¾å¤çŽ°\\ä¸‹å›¾å¤çŽ°\\031â€”â€”correlat.csv"
 y_directory<-choose.files(caption = "Select bacteria (y)")
 
-#y_directory="C:\\Users\\wangxinyi\\Desktop\\Ïà¹ØÐÔÍ¼¸´ÏÖ\\ÏÂÍ¼¸´ÏÖ\\45_031__ÓëÌØ¶¨¾úÈº¶ÔÓ¦µÄ971¸Ä±ä¾úÈºÇ÷ÊÆ.csv"
+#y_directory="C:\\Users\\wangxinyi\\Desktop\\ç›¸å…³æ€§å›¾å¤çŽ°\\ä¸‹å›¾å¤çŽ°\\45_031__ä¸Žç‰¹å®šèŒç¾¤å¯¹åº”çš„971æ”¹å˜èŒç¾¤è¶‹åŠ¿.csv"
 #load dataset:
 x<-read.csv(x_directory,row.names=1)
 
@@ -62,7 +83,7 @@ outerjoin[,1]<-NULL
 pvalue.1<-cor_pmat(outerjoin)
 
 ##after arrange the chart manually:
-#pvalue<-read.csv("D:\\è‚ é“èŒç¾¤\\èŒç¾¤å¤šæ ·æ€§ç”Ÿä¿¡åˆ†æž\\22_æ‰€æœ‰äº”è½¬ä¸åŒæœˆé¾„åˆå¹?-180522\\Correlation analysis\\genus\\Others\\pvalue.csv",row.names=1)
+#pvalue<-read.csv("D:\\é‘²çŠ»äº¾é‘¿å²€å…¢\\é‘¿å²€å…¢æ¾¶æ°­ç‰±éŽ¬Ñ…æ•“æ·‡â€³åžŽé‹æ€½\22_éŽµâ‚¬éˆå¤‰ç°²æžîƒ¿ç¬‰éšå±¾æ¹€æ¦«å‹«æ‚Žéªž?-180522\\Correlation analysis\\genus\\Others\\pvalue.csv",row.names=1)
 #pvalue.1<-cor_pmat(pvalue)
 #write.csv(pvalue.1,"C:\\Users\\wangxinyi\\Desktop\\temp\\matrix_POS.csv")
 #slicing index:

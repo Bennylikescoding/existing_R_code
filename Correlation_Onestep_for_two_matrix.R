@@ -52,12 +52,12 @@ y_directory<-choose.files(caption = "Select bacteria (y)")
 #y_directory="C:\\Users\\wangxinyi\\Desktop\\相关性图复现\\下图复现\\45_031__与特定菌群对应的971改变菌群趋势.csv"
 #load dataset:
 x<-read.csv(x_directory,row.names=1)
-
 y<-read.csv(y_directory,row.names=1)
+
 #calculate correlation:
 x_y_correlation<- cor(x,y)
 
-#:::::::WRITE TO CSV::::::
+#:::::::WRITE coefficient TO CSV::::::
 #write correlation matrix:
 write.csv(x_y_correlation,matrix_file_name)
 #::::::::::::::::::::::::::::
@@ -97,10 +97,46 @@ with_sig_corre_plot<-ggcorrplot(x_y_correlation,lab=TRUE,lab_size=value_label_si
   labs(title=title)
 with_sig_corre_plot
 
-#:::::::WRITE TO CSV::::::
+#:::::::WRITE pvalue TO CSV::::::
 #write pvalue out:
 write.csv(pvalue.2,pvalue_file_name)
 #:::::::::::::::::::::::::
+
+
+
+# get source and target----
+source_target_file_name=paste(file_path,title,"_source_target","_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
+nodeID_file_name=paste(file_path,title,"_nodeID","_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
+
+##read original pvalue files:
+a<-pvalue.2
+
+##subtract values where p<0.05:
+b<-which(a<0.05,arr.ind=T)
+
+##:::::::::::::::::::::::::
+##generate source and target files:
+c<-data.frame(row.names(b),names(a[b[,2]]))
+colnames(c)<-c("source","target")
+c$target<-gsub("\\.[0-9]*$", "", c$target) #remove ".*(numbers)" name
+head(c)
+write.csv(c,source_target_file_name,row.names=FALSE)
+
+##:::::::::::::::::::::::::
+##generate node ID file:
+d<-data.frame(node=union(c$source,c$target))
+head(d,n=20)
+e<-d
+#e$node<-gsub(pattern=".",replacement = "0000",e$node,fixed = TRUE)
+#e$node<-gsub(pattern="0000.*",replacement = "",e$node)
+e$node<-gsub("\\.[0-9]*$", "", e$node)
+e<-e$node[!duplicated(e$node)] # delete replicate cells
+e<-data.frame(e)
+e$nodeID<-seq.int(nrow(e))
+write.csv(e,nodeID_file_name,row.names=FALSE)
+# end of get source and target---------
+
+
 
 ##arrange figures:
 library(grid)

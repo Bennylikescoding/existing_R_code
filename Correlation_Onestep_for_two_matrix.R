@@ -54,10 +54,8 @@ combined_pvalue_file_name=paste(file_path,title,"_comb_cp_tf_",format(Sys.time()
 #choose files interactively:
 x_directory<-choose.files(caption = "Select immune cells (x)")
 
-#x_directory="C:\\Users\\wangxinyi\\Desktop\\相关性图复现\\下图复现\\031——correlat.csv"
 y_directory<-choose.files(caption = "Select bacteria (y)")
 
-#y_directory="C:\\Users\\wangxinyi\\Desktop\\相关性图复现\\下图复现\\45_031__与特定菌群对应的971改变菌群趋势.csv"
 #load dataset:
 x<-read.csv(x_directory,row.names=1)
 y<-read.csv(y_directory,row.names=1)
@@ -91,7 +89,7 @@ outerjoin[,1]<-NULL
 pvalue.1<-cor_pmat(outerjoin)
 
 ##after arrange the chart manually:
-#pvalue<-read.csv("D:\\鑲犻亾鑿岀兢\\鑿岀兢澶氭牱鎬х敓淇″垎鏋怽\22_鎵€鏈変簲杞笉鍚屾湀榫勫悎骞?-180522\\Correlation analysis\\genus\\Others\\pvalue.csv",row.names=1)
+#pvalue<-read.csv("D:\XXX-180522\\Correlation analysis\\genus\\Others\\pvalue.csv",row.names=1)
 #pvalue.1<-cor_pmat(pvalue)
 #write.csv(pvalue.1,"C:\\Users\\wangxinyi\\Desktop\\temp\\matrix_POS.csv")
 #slicing index:

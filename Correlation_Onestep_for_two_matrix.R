@@ -1,28 +1,30 @@
-#also see:https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
+# last update stamp: 20191224-1353, wang xinyi
 
-#uncomment line below if transpose is needed on matrix x:
-#note that you need to open the t-ed file and delete manually the "X" before X2m
-#x<-t(x)
-#default: pearson coefficient
+# Instructions
+## uncomment line below if transpose is needed on matrix x:
+## note that you need to open the t-ed file and delete manually the "X" before X2m
+## x<-t(x)
+## default: pearson coefficient
 
 # Input:
 ## matrix 1:
-##*group*	CD4	CD8	B	Mo	NK
-##WT	12.79166667	21	12.40666667	2.758333333	17.7
-##Tg	29.1	16.1	14.8	7.2	13.4
-##Tg_971	20.4	15.1	15.7	7.3	18.8
+## *group*	CD4	CD8	B	Mo	NK
+## WT	12.79166667	21	12.40666667	2.758333333	17.7
+## Tg	29.1	16.1	14.8	7.2	13.4
+## Tg_971	20.4	15.1	15.7	7.3	18.8
 
 ## matrix 2:
-##*group*	g__Alistipes	g__Coriobacteriaceae_UCG_002	g__Paraprevotella	g__unclassified_f__Muribaculaceae	g__Ruminococcaceae_UCG_005
-##WT	842.6666667	1	0	0	1
-##Tg	692.7142857	2	0	0	2
-##Tg_971	642.8	3	28.8	4.2	3
+## *group*	g__Alistipes	g__Coriobacteriaceae_UCG_002	g__Paraprevotella	g__unclassified_f__Muribaculaceae	g__Ruminococcaceae_UCG_005
+## WT	842.6666667	1	0	0	1
+## Tg	692.7142857	2	0	0	2
+## Tg_971	642.8	3	28.8	4.2	3
 
-# Output:
-## 1.Two plots, w/ or w/o significant marks.
-## 2.Three tables, correlation coefficient matrix, pvalue matrix, pvalue/correlation combined table
-## 3.Node ID and edges information
-## 4.Correlation circus plot
+# Output (9 files):
+## 1.Two plots, w/ or w/o significant marks.(in 1 file)
+## 2.One Correlation circus plot. (1 file)
+## 3.Two tables, correlation coefficient matrix, pvalue matrix.(2 tables)
+## 4.Two tables of Node ID and edges information. (2 tables)
+## 5.Three tables of Transformed pvalue, coefficient, pvalue/coefficient combined tables. (3 tables)
 
 # Code start:
 ##Load library:
@@ -44,6 +46,9 @@ pvalue_file_name=paste(file_path,title, "_pvalue_",format(Sys.time(), "%Y%m%d_%H
 source_target_file_name=paste(file_path,title, "_source_target_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
 nodeID_file_name=paste(file_path,title, "_nodeID_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
 
+trans_matrix_file_name=paste(file_path,title,"_correlation matrix_tf_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
+trans_pvalue_file_name=paste(file_path,title,"_pvalue_tf_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
+combined_pvalue_file_name=paste(file_path,title,"_comb_cp_tf_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
 #::::::::::::::::::::::::::::::::::::::::::::::
 
 #choose files interactively:
@@ -100,11 +105,36 @@ with_sig_corre_plot<-ggcorrplot(x_y_correlation,lab=TRUE,lab_size=value_label_si
   labs(title=title)
 with_sig_corre_plot
 
-#:::::::WRITE pvalue TO CSV::::::
+# WRITE pvalue TO CSV::::::
 #write pvalue out:
 write.csv(pvalue.2,pvalue_file_name)
-#:::::::::::::::::::::::::
 
+#:::::::WRITE transformed correlation matrix and pvalue
+corr<-x_y_correlation
+p.mat<-pvalue.2
+
+##transformed cor matrix
+trans_corr<-data.frame(row=rownames(corr)[row(corr)[upper.tri(corr)]], 
+                       col=colnames(corr)[col(corr)[upper.tri(corr)]], 
+                       corr=corr[upper.tri(corr)])
+
+write.csv(trans_corr,trans_matrix_file_name)
+
+##transformed p value
+trans_p.mat<-data.frame(row=rownames(p.mat)[row(p.mat)[upper.tri(p.mat)]], 
+                        col=colnames(p.mat)[col(p.mat)[upper.tri(p.mat)]], 
+                        p.mat=p.mat[upper.tri(p.mat)])
+
+write.csv(trans_p.mat,trans_pvalue_file_name)
+
+##transformed cor AND p combined
+trans_c<-data.frame(row=rownames(p.mat)[row(p.mat)[upper.tri(p.mat)]], 
+                    col=colnames(p.mat)[col(p.mat)[upper.tri(p.mat)]], 
+                    p.mat=p.mat[upper.tri(p.mat)],
+                    corr=corr[upper.tri(corr)])
+
+write.csv(trans_c,combined_pvalue_file_name)
+###:::::::::::
 
 
 # GET SOURCE AND TARGET----
@@ -139,6 +169,7 @@ write.csv(e,nodeID_file_name,row.names=FALSE)
 
 
 # DRAW CIRCUS MAP---------
+# from Correlational Circus Map.R
 library(igraph)
 
 #edges == source_target file== c
@@ -163,4 +194,6 @@ library(gridExtra)
 correlation_plot<-grid.arrange(without_sig_corre_plot, with_sig_corre_plot, nrow=1,ncol = 2)
 
 ggsave(plot = correlation_plot, paste0(title, "_correlation_plot_", format(Sys.time(), "%Y%m%d_%H%M%S"),".pdf"), path=file_path)
-dev.off()
+#dev.off()
+
+# ref: also see:https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html

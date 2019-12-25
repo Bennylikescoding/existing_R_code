@@ -1,5 +1,25 @@
 ###-----code for Multi-BOXPLOT---###
 
+# Input format:
+##*genetype*	Level3_Description
+##CocageWT	7m
+##CocageWT	9m
+##CocageWT	11m
+##CocageWT	12m
+##CocageWT	16m
+##CocageWT	17m
+##Tg	7m
+##Tg	9m
+##Tg	11m
+##Tg	12m
+##Tg	16m
+##Tg	17m
+##WT	7m
+##WT	9m
+##WT	11m
+##WT	12m
+##WT	17m
+
 # 1.import library
 library(ggplot2)
 library(ggsignif)
@@ -8,7 +28,7 @@ library(grid)
 library(gridExtra)
 
 # 2.import files
-#孙老师原始肠免疫细胞114-total.csv
+#瀛欒€佸笀鍘熷鑲犲厤鐤粏鑳?114-total.csv
 file_path<-choose.files()
 bxplot_df<-read.csv(file_path)
 

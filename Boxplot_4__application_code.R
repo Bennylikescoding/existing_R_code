@@ -28,7 +28,7 @@ library(grid)
 library(gridExtra)
 
 # 2.import files
-#孙老师原始肠免疫细�?114-total.csv
+#瀛欒€佸笀鍘熷鑲犲厤鐤粏鑳?114-total.csv
 file_path<-choose.files()
 bxplot_df<-read.csv(file_path)
 
@@ -95,9 +95,18 @@ grid.arrange(out[[16]], out[[17]], out[[18]],
              top = textGrob(grid_graph_title, gp=gpar(fontsize=15,font=1)))
 
 ##GROUP 7 PLOTING...
-grid.arrange(out[[19]], out[[20]],
-             ncol = 1, nrow = 2,
+grid.arrange(out[[19]], out[[20]], out[[21]],
+             ncol = 1, nrow = 3,
              top = textGrob(grid_graph_title, gp=gpar(fontsize=15,font=1)))
 
 ###-----END OF BOXPLOT---###
+for (i in c(78)){
+  print(i)
+  grid.arrange(out[[i]],out[[i+1]],out[[i+2]],
+               ncol = 1, nrow = 3,
+               top = textGrob(grid_graph_title, gp=gpar(fontsize=15,font=1)))
+}
 
+out[[223]]
+
+dev.off()

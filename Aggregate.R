@@ -18,6 +18,7 @@ value_start_from_col=2
 
 #start aggregate
 df_agrgte<-choose.files(caption="choose .csv matrix to be aggregated")
+df_agrgte<-read.csv(df_agrgte)
 newRow<-aggregate(df_agrgte[, c(value_start_from_col:ncol(df_agrgte))], list(Group=df_agrgte$group), mean)
 write.csv(newRow,"C:\\Users\\wangxinyi\\Desktop\\temp\\aggregated_new.csv")
 
@@ -25,4 +26,3 @@ write.csv(newRow,"C:\\Users\\wangxinyi\\Desktop\\temp\\aggregated_new.csv")
 
 #ref
 #https://stackoverflow.com/questions/21982987/mean-per-group-in-a-data-frame
-

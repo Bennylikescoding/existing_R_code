@@ -7,14 +7,14 @@ library(colorspace)
 #my_palette <- colorRampPalette(c("green", "black", "red"))(n = 1000)
 
 #main_title="genus_harmful WT cocaged_wt Tg"
-main_title="heatmap"
+main_title="NR_genus_Tg_average"
 #main_title="new brain cytokines 9M_WT and 9M_Tg 180611"
 file_directory<-choose.files(caption = "Select heatmap csv source file")
 ## choose color:
 ##http://research.stowers.org/mcm/efg/R/Color/Chart/
 ##https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf
 
-#file format:
+#file format:(g__77likevirus is not allowed, must add "n": g__n77likevirus)
 #metabiolite(neg)	a10_2	a11_2	a12_2	a91_2
 #Arg Lys His	44960.9211	66698.04785	49138.47991	92558.87864
 #PUBCHEM_23667298	1611.92127	3942.338158	2013.704038	4847.86141
@@ -37,10 +37,11 @@ df1_ColSideColors=rep(c("1","2","3","4","5","6"),c(1,1,1,1,1,1))
 #df3_ColSideColors=rep(c("plum","plum1","plum2","plum3","plum4"),c(5,4,7,5,8))
 #df4_ColSideColors=rep(c("plum4","orangered4"),c(8,6))
 
-#load data file:
+#load raw data file:
 df1<-read.csv(file_directory,row.names=1)
 #df3<-df2[,c(1:29)]
 #df4<-df2[,c(22:29,51:56)]
+
 
 distCor <- function(x) as.dist(1-cor(t(x)))
 hclustAvg <- function(x) hclust(x, method="average")
@@ -52,15 +53,15 @@ hclustAvg <- function(x) hclust(x, method="average")
 #                  distfun = distCor,hclustfun = hclustAvg)
 
 #set margins:
-par(oma=c(3,0,0,0))
-par(mar=c(0,4,4,20))
+#par(oma=c(3,0,0,0))
+#par(mar=c(0,4,4,20))
 #https://www.r-graph-gallery.com/74-margin-and-oma-cheatsheet/
 
 #if font is too large, change font to "cexrow=0.1,cexcol=0.9"
 #color 1:
 #margins=c(height,)
 df1.ht<-heatmap.2(as.matrix(df1),col=bluered(100),trace="none",scale="row",symkey=FALSE,
-                  cexCol=1,cexRow=1,dendrogram="row",Colv=FALSE,Rowv=TRUE,main=main_title, 
+                  cexCol=1,cexRow=0.1,dendrogram="row",Colv=FALSE,Rowv=TRUE,main=main_title, 
                   ColSideColors = df1_ColSideColors, margins=c(1,20),
                   distfun = distCor,hclustfun = hclustAvg)
 

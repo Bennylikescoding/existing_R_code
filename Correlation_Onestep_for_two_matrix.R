@@ -32,7 +32,7 @@ library(ggcorrplot)
 
 #:::::::::::::::::::::::::::::::::::::::::::::
 #set title, label size, x and y directory:
-title="S4C"
+title="mc2__mg1_p0.01"
 by="group"
 #set font size:
 x_label_size=6
@@ -41,6 +41,7 @@ value_label_size=1
 
 #output file name:
 file_path="C:\\Users\\wangxinyi\\Desktop\\temp\\"
+
 matrix_file_name=paste(file_path,title, "_correlation matrix_","_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
 pvalue_file_name=paste(file_path,title, "_pvalue_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
 source_target_file_name=paste(file_path,title, "_source_target_",format(Sys.time(), "%Y%m%d_%H%M%S"),".csv",sep="")
@@ -54,8 +55,10 @@ combined_pvalue_file_name=paste(file_path,title,"_comb_cp_tf_",format(Sys.time()
 #choose files interactively:
 x_directory<-choose.files(caption = "Select immune cells (x)")
 
+#x_directory="C:\\Users\\wangxinyi\\Desktop\\相关性图复现\\下图复现\\031——correlat.csv"
 y_directory<-choose.files(caption = "Select bacteria (y)")
 
+#y_directory="C:\\Users\\wangxinyi\\Desktop\\相关性图复现\\下图复现\\45_031__与特定菌群对应的971改变菌群趋势.csv"
 #load dataset:
 x<-read.csv(x_directory,row.names=1)
 y<-read.csv(y_directory,row.names=1)
@@ -89,7 +92,7 @@ outerjoin[,1]<-NULL
 pvalue.1<-cor_pmat(outerjoin)
 
 ##after arrange the chart manually:
-#pvalue<-read.csv("D:\XXX-180522\\Correlation analysis\\genus\\Others\\pvalue.csv",row.names=1)
+#pvalue<-read.csv("D:\\鑲犻亾鑿岀兢\\鑿岀兢澶氭牱鎬х敓淇″垎鏋怽\22_鎵€鏈変簲杞笉鍚屾湀榫勫悎骞?-180522\\Correlation analysis\\genus\\Others\\pvalue.csv",row.names=1)
 #pvalue.1<-cor_pmat(pvalue)
 #write.csv(pvalue.1,"C:\\Users\\wangxinyi\\Desktop\\temp\\matrix_POS.csv")
 #slicing index:
@@ -108,28 +111,46 @@ with_sig_corre_plot
 write.csv(pvalue.2,pvalue_file_name)
 
 #:::::::WRITE transformed correlation matrix and pvalue
+#---------define combine function
+get_rc_value <- function(matrix) {
+  up<-data.frame(row=rownames(matrix)[row(matrix)[upper.tri(matrix,diag = TRUE)]], 
+                 col=colnames(matrix)[col(matrix)[upper.tri(matrix,diag = TRUE)]], 
+                 matrixname=matrix[upper.tri(matrix,diag = TRUE)])
+  
+  low<-data.frame(row=rownames(matrix)[row(matrix)[lower.tri(matrix,diag = FALSE)]], 
+                  col=colnames(matrix)[col(matrix)[lower.tri(matrix,diag = FALSE)]], 
+                  matrixname=matrix[lower.tri(corr,diag = FALSE)])
+  
+  up_low_combined<-rbind(up, low)
+  
+  return(up_low_combined)
+}
+#-------------------------
+
+# start calculate corr and pvalue
 corr<-x_y_correlation
 p.mat<-pvalue.2
 
 ##transformed cor matrix
-trans_corr<-data.frame(row=rownames(corr)[row(corr)[upper.tri(corr)]], 
-                       col=colnames(corr)[col(corr)[upper.tri(corr)]], 
-                       corr=corr[upper.tri(corr)])
-
+trans_corr<-get_rc_value(corr)
 write.csv(trans_corr,trans_matrix_file_name)
 
 ##transformed p value
-trans_p.mat<-data.frame(row=rownames(p.mat)[row(p.mat)[upper.tri(p.mat)]], 
-                        col=colnames(p.mat)[col(p.mat)[upper.tri(p.mat)]], 
-                        p.mat=p.mat[upper.tri(p.mat)])
-
+trans_p.mat<-get_rc_value(p.mat)
 write.csv(trans_p.mat,trans_pvalue_file_name)
 
 ##transformed cor AND p combined
-trans_c<-data.frame(row=rownames(p.mat)[row(p.mat)[upper.tri(p.mat)]], 
-                    col=colnames(p.mat)[col(p.mat)[upper.tri(p.mat)]], 
-                    p.mat=p.mat[upper.tri(p.mat)],
-                    corr=corr[upper.tri(corr)])
+trans_c_up<-data.frame(row=rownames(p.mat)[row(p.mat)[upper.tri(p.mat,diag = TRUE)]], 
+                    col=colnames(p.mat)[col(p.mat)[upper.tri(p.mat,diag = TRUE)]], 
+                    p.mat=p.mat[upper.tri(p.mat,diag = TRUE)],
+                    corr=corr[upper.tri(corr,diag = TRUE)])
+
+trans_c_low<-data.frame(row=rownames(p.mat)[row(p.mat)[lower.tri(p.mat,diag = FALSE)]], 
+                       col=colnames(p.mat)[col(p.mat)[lower.tri(p.mat,diag = FALSE)]], 
+                       p.mat=p.mat[lower.tri(p.mat,diag = FALSE)],
+                       corr=corr[lower.tri(corr,diag = FALSE)])
+
+trans_c<-rbind(trans_c_up,trans_c_low)
 
 write.csv(trans_c,combined_pvalue_file_name)
 ###:::::::::::
@@ -170,7 +191,7 @@ write.csv(e,nodeID_file_name,row.names=FALSE)
 # from Correlational Circus Map.R
 library(igraph)
 
-#edges == source_target file== c
+#edges == source_target file == c
 #nodes == node ID file == e
 edges <- c
 nodes <- e
